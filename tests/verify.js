@@ -115,6 +115,22 @@ for (const [b, s] of Object.entries(expected)) assert.strictEqual(layout[b], s.s
 assert.strictEqual(wm.palaces[wm.ming].branch, '寅'); assert.ok(wm.palaces[wm.ming].isShen);
 assert.strictEqual(wm.juName, '火六局'); assert.strictEqual(wm.yinyang, '陰女');
 assert.deepStrictEqual(wm.palaces.map(p => p.branch + p.decade[0]).join(), '子106,丑116,寅6,卯16,辰26,巳36,午46,未56,申66,酉76,戌86,亥96');
+// 另外兩張與文墨天機逐宮核對過的命盤
+function sameAs(input, exp, ming, shen, ju, decadeAtMing){
+  const c = Z.chart(input);
+  const got = Object.fromEntries(c.palaces.map(p => [p.branch, p.stars.map(s => s.name + (s.hua ? s.hua[1] : '')).sort().join(' ')]));
+  for (const b of Z.BRANCHES) assert.strictEqual(got[b], (exp[b] || '').split(' ').filter(Boolean).sort().join(' '), JSON.stringify(input) + ' ' + b);
+  assert.strictEqual(c.palaces[c.ming].branch, ming); assert.ok(c.palaces[Z.BRANCHES.indexOf(shen)].isShen);
+  assert.strictEqual(c.juName, ju); assert.strictEqual(c.palaces[c.ming].decade[0], decadeAtMing);
+}
+sameAs({y: 1982, m: 8, d: 30, hour: 18, minute: 0, gender: 'M'}, {
+  巳: '天梁祿 天鉞 紅鸞', 午: '七殺', 未: '天姚', 申: '廉貞 地劫', 辰: '紫微權 天相 右弼', 酉: '',
+  卯: '天機 巨門 天魁 天刑', 戌: '破軍 左輔科 陀羅 火星', 寅: '貪狼 天馬 地空', 丑: '太陽 太陰 文昌 文曲',
+  子: '武曲忌 天府 擎羊 鈴星', 亥: '天同 祿存 天喜'}, '亥', '巳', '金四局', 4);
+sameAs({y: 2015, m: 4, d: 15, hour: 6, minute: 50, gender: 'M'}, {
+  巳: '天相 左輔 天馬', 午: '天梁權', 未: '廉貞 七殺 文昌 文曲', 申: '天鉞 紅鸞 地空', 辰: '巨門 擎羊', 酉: '右弼',
+  卯: '紫微科 貪狼 祿存', 戌: '天同 天刑', 寅: '天機祿 太陰忌 天喜 天姚 陀羅 地劫', 丑: '天府 鈴星',
+  子: '太陽 天魁 火星', 亥: '武曲 破軍'}, '子', '午', '火六局', 6);
 
 // 晚子時：23:30 預設算隔天
 const late = Z.chart({y: 2000, m: 1, d: 1, hour: 23, minute: 30, gender: 'M'});
@@ -127,4 +143,4 @@ assert.strictEqual(lp.lunar.text, '閏二月十六'); assert.strictEqual(lp.luna
 assert.strictEqual(Z.chart({y: 2023, m: 4, d: 6, hour: 8, gender: 'M', leapMode: 'this'}).lunar.usedMonth, 2);
 assert.throws(() => Z.chart({y: 2000, m: 1, d: 1, hour: 8}));
 
-console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; late-zi and leap-month options.');
+console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options.');
