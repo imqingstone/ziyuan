@@ -28,6 +28,10 @@
 <section id="result" hidden aria-labelledby="result-title">
 <div class="result-head"><h2 id="result-title">命盤</h2><button id="save" type="button">儲存這張命盤</button></div>
 <p id="adjust-note" class="note" hidden></p>
+<div class="yearbar">
+<label class="check"><input id="show-year" type="checkbox">顯示流年與小限</label>
+<div id="year-pick" class="ypick" hidden><button id="year-prev" type="button" aria-label="前一年">‹</button><label><span class="sr">流年年份</span><input id="year" type="number" inputmode="numeric" min="1900" max="2220"></label><button id="year-next" type="button" aria-label="後一年">›</button><span id="year-info" class="yinfo"></span></div>
+</div>
 <div id="board" class="board" role="group" aria-label="十二宮命盤，點選宮位查看說明"></div>
 <section id="detail" class="box detail" aria-live="polite"></section>
 <details class="box legend"><summary>名詞說明</summary><dl id="terms"></dl></details>

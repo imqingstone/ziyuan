@@ -229,6 +229,25 @@ function chart(input){
   };
 }
 
-const api = {SIHUA, SIHUA_NAMES, BRIGHTNESS, STEMS, BRANCHES, PALACES, solarToLunar, lunarToSolar, chart, ziweiPosition, hourBranch, dayNumber, inRange, FIRST_DAY, LAST_DAY, toSolar};
+// 流年與小限。year 為農曆年（以春節換年），年齡為虛歲。
+// 小限：寅午戌年生起辰、申子辰年生起戌、巳酉丑年生起未、亥卯未年生起丑；一歲起，男順女逆。
+const XIAOXIAN_START = [10, 7, 4, 1, 10, 7, 4, 1, 10, 7, 4, 1];
+function yearly(c, year){
+  const birthYear = c.lunar.year, age = year - birthYear + 1;
+  if (!Number.isInteger(year) || age < 1) throw Error('流年要在出生那一年之後');
+  const ys = mod(year - 4, 10), yb = mod(year - 4, 12);
+  const byb = BRANCHES.indexOf(c.yearGanzhi[1]);
+  const male = c.input.gender === 'M';
+  const xiao = mod(XIAOXIAN_START[byb] + (male ? 1 : -1) * (age - 1), 12);
+  const da = c.palaces.find(p => age >= p.decade[0] && age <= p.decade[1]);
+  return {
+    year, age, ganzhi: STEMS[ys] + BRANCHES[yb], stem: STEMS[ys],
+    ming: yb, names: BRANCHES.map((_, b) => PALACES[mod(yb - b, 12)]),
+    sihua: SIHUA[STEMS[ys]].map((name, i) => ({name, hua: SIHUA_NAMES[i]})),
+    xiaoxian: xiao, daxian: da ? da.index : null,
+  };
+}
+
+const api = {yearly, SIHUA, SIHUA_NAMES, BRIGHTNESS, STEMS, BRANCHES, PALACES, solarToLunar, lunarToSolar, chart, ziweiPosition, hourBranch, dayNumber, inRange, FIRST_DAY, LAST_DAY, toSolar};
 if (typeof module !== 'undefined') module.exports = api; else g.Ziyuan = api;
 })(this);

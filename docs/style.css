@@ -42,12 +42,25 @@ button.primary{background:var(--purple);color:#fff;width:100%;font-size:17px;let
 .cell.ming{border-color:var(--purple);border-width:2px;padding:5px 6px}
 .cell[aria-pressed=true]{background:var(--lav)}
 .cell .stars{flex:1;display:flex;flex-wrap:wrap;align-content:flex-start;gap:0 6px}
-.cell .s{white-space:nowrap}
+.cell .s{white-space:nowrap;display:inline-flex;flex-wrap:wrap;align-items:baseline;max-width:100%}
 .cell .major{font-size:14px;font-weight:700;color:var(--purple)}
 .cell .tough{color:var(--tough)}
 .cell .lucky{color:var(--gold)}
 .hua{display:inline-block;font-size:10px;font-weight:600;border:1px solid;border-radius:4px;padding:0 2px;margin-left:1px;line-height:1.3;vertical-align:1px}
 .hua.zi{border-style:dashed;font-weight:400}.hua.化祿{color:var(--lu)}.hua.化權{color:var(--quan)}.hua.化科{color:var(--ke)}.hua.化忌{color:var(--ji)}
+.hua.liu{border-color:transparent;font-weight:600;color:#fff}.hua.liu.化祿{background:var(--lu)}.hua.liu.化權{background:var(--quan)}.hua.liu.化科{background:var(--ke)}.hua.liu.化忌{background:var(--ji)}
+.cell .ytags{display:flex;flex-wrap:wrap;gap:2px;margin-top:3px}
+.yt{font-size:10px;line-height:1.4;padding:0 3px;border-radius:4px;border:1px solid var(--line);color:var(--mute);white-space:nowrap}
+.yt-liu.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.yt-da{border-color:var(--gold);color:var(--gold)}.yt-xiao{border-color:var(--ke);color:var(--ke)}
+.yearbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:0 0 10px}
+.ypick{display:flex;align-items:center;gap:6px}
+.ypick button{min-width:44px;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--purple);font-size:20px;cursor:pointer}
+.ypick input{width:5.5em;min-height:44px;padding:6px 8px;border:1px solid #b9adc2;border-radius:10px;background:#fff;color:var(--ink);font:inherit;text-align:center}
+.yinfo{color:var(--mute);font-size:14px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.center .cy{margin-top:6px;color:var(--purple)}
+.detail .yline{background:var(--lav);border-radius:8px;padding:8px 10px;margin:0 0 12px}
 .lv{font-size:10px;font-weight:400;color:var(--mute);margin-left:1px;vertical-align:1px}.lv-廟,.lv-旺{color:var(--gold)}.lv-陷,.lv-不{color:var(--tough)}
 .cell .foot{display:flex;justify-content:space-between;align-items:flex-end;gap:4px;border-top:1px solid var(--line);margin-top:4px;padding-top:3px}
 .cell .pname{font-weight:700;color:var(--ink)}

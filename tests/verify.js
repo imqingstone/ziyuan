@@ -173,4 +173,18 @@ for (const c of [ex, wm, ...Array.from({length: 300}, (_, k) => Z.chart({y: 1940
 // 範例：1990/6/15 午時女命，命宮戊子有天府、武曲；戊干四化為貪狼、太陰、右弼、天機，命宮沒有自化。
 assert.ok(ex.palaces[0].stars.every(s => !s.zihua));
 
-console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化.');
+// 流年與小限
+const y26 = Z.yearly(ex, 2026);   // 庚午年生女命
+assert.strictEqual(y26.ganzhi, '丙午'); assert.strictEqual(y26.age, 37);
+assert.strictEqual(Z.BRANCHES[y26.ming], '午'); assert.strictEqual(y26.names[B('午')], '命宮'); assert.strictEqual(y26.names[B('巳')], '兄弟');
+assert.deepStrictEqual(y26.sihua.map(x => x.name), ['天同','天機','文昌','廉貞']);
+assert.strictEqual(Z.BRANCHES[Z.yearly(ex, 1990).xiaoxian], '辰');   // 午年生起辰，一歲
+assert.strictEqual(Z.BRANCHES[Z.yearly(ex, 1991).xiaoxian], '卯');   // 女命逆行
+assert.strictEqual(Z.BRANCHES[y26.daxian], '酉');                    // 陽女逆行，36–45 在酉
+const male = Z.chart({y: 1982, m: 8, d: 30, hour: 18, minute: 0, gender: 'M'});   // 壬戌年生
+assert.strictEqual(Z.BRANCHES[Z.yearly(male, 1982).xiaoxian], '辰'); assert.strictEqual(Z.BRANCHES[Z.yearly(male, 1983).xiaoxian], '巳');
+assert.strictEqual(Z.yearly(ex, ex.palaces[ex.ming].decade[0] + 1989).daxian, ex.ming);
+assert.strictEqual(Z.yearly(ex, 1991).daxian, null);   // 起運前
+assert.throws(() => Z.yearly(ex, 1989));
+
+console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化; 流年與小限.');
