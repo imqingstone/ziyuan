@@ -42,7 +42,7 @@ button.primary{background:var(--purple);color:#fff;width:100%;font-size:17px;let
 .cell.ming{border-color:var(--purple);border-width:2px;padding:5px 6px}
 .cell[aria-pressed=true]{background:var(--lav)}
 .cell .stars{flex:1;display:flex;flex-wrap:wrap;align-content:flex-start;gap:0 6px}
-.cell .s{white-space:nowrap;display:inline-flex;flex-wrap:wrap;align-items:baseline;max-width:100%}
+.cell .s{max-width:100%}.cell .nm,.cell .hua{white-space:nowrap}.cell .hua{margin-left:2px}
 .cell .major{font-size:14px;font-weight:700;color:var(--purple)}
 .cell .tough{color:var(--tough)}
 .cell .lucky{color:var(--gold)}
