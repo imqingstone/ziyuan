@@ -1,7 +1,7 @@
 'use strict';
 const $ = s => document.querySelector(s);
 const E = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
-const {STAR_INFO, HUA_INFO, PALACE_INFO, TERMS} = window.ZiyuanTexts;
+const {STAR_INFO, HUA_INFO, BRIGHT_INFO, PALACE_INFO, TERMS} = window.ZiyuanTexts;
 // 地支在 4×4 盤面上的位置 [列, 欄]
 const GRID = {5: [1, 1], 6: [1, 2], 7: [1, 3], 8: [1, 4], 4: [2, 1], 9: [2, 4], 3: [3, 1], 10: [3, 4], 2: [4, 1], 1: [4, 2], 0: [4, 3], 11: [4, 4]};
 const KIND_ORDER = {major: 0, lucky: 1, other: 2, tough: 3};
@@ -73,7 +73,7 @@ function compute(v){
 
 // ---------- 畫面 ----------
 function starHTML(s){
-  return '<span class="s ' + s.kind + '">' + s.name + (s.hua ? '<span class="hua ' + s.hua + '">' + s.hua.slice(1) + '</span>' : '') + '</span>';
+  return '<span class="s ' + s.kind + '">' + s.name + (s.bright ? '<span class="lv lv-' + s.bright + '">' + s.bright + '</span>' : '') + (s.hua ? '<span class="hua ' + s.hua + '">' + s.hua.slice(1) + '</span>' : '') + '</span>';
 }
 function sortStars(list){ return [...list].sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]); }
 
@@ -86,7 +86,7 @@ function render(){
   const cells = c.palaces.map(p => {
     const [r, col] = GRID[p.index];
     const stars = sortStars(p.stars);
-    const label = p.name + '，' + p.stem + p.branch + '宮' + (p.isShen ? '，身宮' : '') + '。' + (stars.length ? stars.map(s => s.name + (s.hua || '')).join('、') : '沒有主星') + '。大限 ' + p.decade[0] + ' 到 ' + p.decade[1] + ' 歲';
+    const label = p.name + '，' + p.stem + p.branch + '宮' + (p.isShen ? '，身宮' : '') + '。' + (stars.length ? stars.map(s => s.name + (s.bright ? s.bright : '') + (s.hua || '')).join('、') : '沒有主星') + '。大限 ' + p.decade[0] + ' 到 ' + p.decade[1] + ' 歲';
     return '<button type="button" class="cell' + (p.index === c.ming ? ' ming' : '') + '" style="grid-row:' + r + ';grid-column:' + col + '" data-i="' + p.index + '" aria-pressed="' + (p.index === selected) + '" aria-label="' + E(label) + '">' +
       '<span class="stars">' + stars.map(starHTML).join('') + '</span>' +
       '<span class="foot"><span><span class="pname">' + p.name + '</span>' + (p.isShen ? '<span class="shen">身</span>' : '') + '</span><span class="gz">' + p.stem + p.branch + '</span></span>' +
@@ -111,8 +111,9 @@ function showDetail(i, focus){
   const opposite = c.palaces[(i + 6) % 12];
   const items = stars.map(s => {
     const [title, text] = STAR_INFO[s.name];
-    return '<li><b class="' + s.kind + '">' + s.name + '</b><small>' + [KIND_NAME[s.kind], title].filter(Boolean).join('・') + '</small>' +
+    return '<li><b class="' + s.kind + '">' + s.name + '</b><small>' + [KIND_NAME[s.kind], title, s.bright ? '亮度' + s.bright : ''].filter(Boolean).join('・') + '</small>' +
       (s.hua ? '<span class="hua ' + s.hua + '">' + s.hua + '</span>' : '') + '<p>' + text + '</p>' +
+      (s.bright ? '<p class="muted">亮度「' + s.bright + '」：' + BRIGHT_INFO[s.bright] + '</p>' : '') +
       (s.hua ? '<p class="muted">' + s.hua + '：' + HUA_INFO[s.hua] + '</p>' : '') + '</li>';
   }).join('');
   $('#detail').innerHTML = '<h3>' + p.name + '・' + p.stem + p.branch + (p.isShen ? '（身宮）' : '') + '</h3>' +
