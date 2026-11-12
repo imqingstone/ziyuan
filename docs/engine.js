@@ -231,6 +231,8 @@ function chart(input){
 
 // 流年與小限。year 為農曆年（以春節換年），年齡為虛歲。
 // 小限：寅午戌年生起辰、申子辰年生起戌、巳酉丑年生起未、亥卯未年生起丑；一歲起，男順女逆。
+const LIU_CHANG_QU = {甲:[5,9],乙:[6,8],丙:[8,6],丁:[9,5],戊:[8,6],己:[9,5],庚:[11,3],辛:[0,2],壬:[2,0],癸:[3,11]};
+const LIU_MA = [2, 11, 8, 5];   // 申子辰→寅、巳酉丑→亥、寅午戌→申、亥卯未→巳
 const XIAOXIAN_START = [10, 7, 4, 1, 10, 7, 4, 1, 10, 7, 4, 1];
 function yearly(c, year){
   const birthYear = c.lunar.year, age = year - birthYear + 1;
@@ -240,11 +242,19 @@ function yearly(c, year){
   const male = c.input.gender === 'M';
   const xiao = mod(XIAOXIAN_START[byb] + (male ? 1 : -1) * (age - 1), 12);
   const da = c.palaces.find(p => age >= p.decade[0] && age <= p.decade[1]);
+  // 流曜：流祿、流羊、流陀、流魁、流鉞、流昌、流曲依流年干；流馬、流鸞、流喜依流年支。
+  const stem = STEMS[ys], stars = Array.from({length: 12}, () => []);
+  const put = (pos, name, kind) => stars[mod(pos, 12)].push({name, kind});
+  const lu = LUCUN[stem], [kui, yue] = KUI_YUE[stem], [chang, qu] = LIU_CHANG_QU[stem];
+  put(lu, '流祿', 'other'); put(lu + 1, '流羊', 'tough'); put(lu - 1, '流陀', 'tough');
+  put(LIU_MA[yb % 4], '流馬', 'other');
+  put(kui, '流魁', 'lucky'); put(yue, '流鉞', 'lucky'); put(chang, '流昌', 'lucky'); put(qu, '流曲', 'lucky');
+  put(3 - yb, '流鸞', 'other'); put(9 - yb, '流喜', 'other');
   return {
     year, age, ganzhi: STEMS[ys] + BRANCHES[yb], stem: STEMS[ys],
     ming: yb, names: BRANCHES.map((_, b) => PALACES[mod(yb - b, 12)]),
     sihua: SIHUA[STEMS[ys]].map((name, i) => ({name, hua: SIHUA_NAMES[i]})),
-    xiaoxian: xiao, daxian: da ? da.index : null,
+    xiaoxian: xiao, daxian: da ? da.index : null, stars,
   };
 }
 
