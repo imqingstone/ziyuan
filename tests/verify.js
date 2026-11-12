@@ -202,4 +202,13 @@ assert.strictEqual(ts.lonMin, 6); assert.strictEqual(ts.hour, 12); assert.strict
 const back = Z.trueSolar({y: 2026, m: 2, d: 11, hour: 0, minute: 5}, 118.32);   // 金門、二月：往前跨日
 assert.deepStrictEqual([back.m, back.d, back.hour], [2, 10, 23]);
 
-console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化; 流年與小限; 流曜; 真太陽時.');
+// 主星落宮解說：宮名與星名都正確，文字不為空。
+const READINGS = require('../docs/readings.js');
+for (const [pal, m] of Object.entries(READINGS)) {
+  assert.ok(Z.PALACES.includes(pal), pal);
+  for (const [star, t] of Object.entries(m)) { assert.ok(MAJOR.includes(star), star); assert.ok(t.length > 20, pal + star); }
+}
+const readingCount = Object.values(READINGS).reduce((n, m) => n + Object.keys(m).length, 0);
+assert.strictEqual(readingCount, 168);
+
+console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化; 流年與小限; 流曜; 真太陽時; ' + readingCount + ' palace readings.');

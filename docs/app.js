@@ -1,6 +1,7 @@
 'use strict';
 const $ = s => document.querySelector(s);
 const E = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const READINGS = window.ZiyuanReadings || {};
 const {LIU_INFO, LIU_STAR_INFO, STAR_INFO, HUA_INFO, ZIHUA_INFO, BRIGHT_INFO, PALACE_INFO, TERMS} = window.ZiyuanTexts;
 // 地支在 4×4 盤面上的位置 [列, 欄]
 const GRID = {5: [1, 1], 6: [1, 2], 7: [1, 3], 8: [1, 4], 4: [2, 1], 9: [2, 4], 3: [3, 1], 10: [3, 4], 2: [4, 1], 1: [4, 2], 0: [4, 3], 11: [4, 4]};
@@ -156,6 +157,7 @@ function showDetail(i, focus){
     const [title, text] = STAR_INFO[s.name];
     return '<li><b class="' + s.kind + '">' + s.name + '</b><small>' + [KIND_NAME[s.kind], title, s.bright ? '亮度' + s.bright : ''].filter(Boolean).join('・') + '</small>' +
       (s.hua ? '<span class="hua ' + s.hua + '">' + s.hua + '</span>' : '') + (s.zihua ? '<span class="hua zi ' + s.zihua + '">自' + s.zihua + '</span>' : '') + (lh ? '<span class="hua liu ' + lh + '">流年' + lh + '</span>' : '') + '<p>' + text + '</p>' +
+      (READINGS[p.name] && READINGS[p.name][s.name] ? '<p class="inpal"><b>' + s.name + '在' + p.name.replace(/宮$/, '') + '宮</b>' + READINGS[p.name][s.name] + '</p>' : '') +
       (s.bright ? '<p class="muted">亮度「' + s.bright + '」：' + BRIGHT_INFO[s.bright] + '</p>' : '') +
       (s.hua ? '<p class="muted">' + s.hua + '：' + HUA_INFO[s.hua] + '</p>' : '') +
       (s.zihua ? '<p class="muted">自' + s.zihua + '：本宮宮干「' + p.stem + '」讓' + s.name + s.zihua + '。' + ZIHUA_INFO[s.zihua] + '</p>' : '') +
@@ -166,7 +168,8 @@ function showDetail(i, focus){
     (Y ? '<p class="yline">' + Y.year + ' ' + Y.ganzhi + '年（虛歲 ' + Y.age + '），這一宮是流年的' + Y.names[i] + '。' +
       (Y.daxian === i ? '目前正走這一宮的大限。' : '') + (Y.xiaoxian === i ? '今年的小限也在這一宮。' : '') + LIU_INFO[Y.names[i]] + '</p>' +
       (Y.stars[i].length ? '<ul class="liulist">' + Y.stars[i].map(x => '<li><b class="' + x.kind + '">' + x.name + '</b><small>流曜</small><p>' + LIU_STAR_INFO[x.name] + '</p></li>').join('') + '</ul>' : '') : '') +
-    (borrow ? '<p class="empty">這一宮沒有主星，傳統上會參考對面的' + opposite.name + '（' + (opposite.stars.filter(s => s.kind === 'major').map(s => s.name).join('、') || '同樣沒有主星') + '）一起看。</p>' : '') +
+    (borrow ? '<p class="empty">這一宮沒有主星，傳統上會參考對面的' + opposite.name + '（' + (opposite.stars.filter(s => s.kind === 'major').map(s => s.name).join('、') || '同樣沒有主星') + '）一起看。</p>' +
+      opposite.stars.filter(s => s.kind === 'major' && READINGS[p.name] && READINGS[p.name][s.name]).map(s => '<p class="inpal borrow"><b>借對宮' + s.name + '來看' + p.name.replace(/宮$/, '') + '宮</b>' + READINGS[p.name][s.name] + '</p>').join('') : '') +
     (items ? '<ul>' + items + '</ul>' : '');
   if (focus) $('#detail').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest'});
 }
