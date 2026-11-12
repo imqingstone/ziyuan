@@ -143,4 +143,16 @@ assert.strictEqual(lp.lunar.text, '閏二月十六'); assert.strictEqual(lp.luna
 assert.strictEqual(Z.chart({y: 2023, m: 4, d: 6, hour: 8, gender: 'M', leapMode: 'this'}).lunar.usedMonth, 2);
 assert.throws(() => Z.chart({y: 2000, m: 1, d: 1, hour: 8}));
 
-console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options.');
+// 主星亮度：每顆主星都有亮度，並抽查通行表的幾個位置。
+for (const n of MAJOR) assert.strictEqual(Z.BRIGHTNESS[n].length, 12, n);
+const lvAt = (n, br) => Z.BRIGHTNESS[n][B(br)];
+assert.strictEqual(lvAt('紫微', '午'), '廟'); assert.strictEqual(lvAt('紫微', '子'), '平');
+assert.strictEqual(lvAt('太陽', '卯'), '廟'); assert.strictEqual(lvAt('太陽', '子'), '陷');
+assert.strictEqual(lvAt('太陰', '亥'), '廟'); assert.strictEqual(lvAt('太陰', '卯'), '陷');
+assert.strictEqual(lvAt('天機', '巳'), '平'); assert.strictEqual(lvAt('巨門', '辰'), '陷');
+for (const p of ex.palaces) for (const s of p.stars) {
+  if (MAJOR.includes(s.name)) assert.strictEqual(s.bright, Z.BRIGHTNESS[s.name][p.index], s.name);
+  else assert.strictEqual(s.bright, undefined, s.name);
+}
+
+console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; major-star brightness.');

@@ -46,6 +46,7 @@ button.primary{background:var(--purple);color:#fff;width:100%;font-size:17px;let
 .cell .lucky{color:var(--gold)}
 .hua{display:inline-block;font-size:10px;font-weight:600;border:1px solid;border-radius:4px;padding:0 2px;margin-left:1px;line-height:1.3;vertical-align:1px}
 .hua.化祿{color:var(--lu)}.hua.化權{color:var(--quan)}.hua.化科{color:var(--ke)}.hua.化忌{color:var(--ji)}
+.lv{font-size:10px;font-weight:400;color:var(--mute);margin-left:1px;vertical-align:1px}.lv-廟,.lv-旺{color:var(--gold)}.lv-陷,.lv-不{color:var(--tough)}
 .cell .foot{display:flex;justify-content:space-between;align-items:flex-end;gap:4px;border-top:1px solid var(--line);margin-top:4px;padding-top:3px}
 .cell .pname{font-weight:700;color:var(--ink)}
 .cell .gz{color:var(--mute)}

@@ -91,6 +91,23 @@ function tianMa(b){
   if ([5,9,1].includes(b)) return 11;
   return 5;
 }
+// 十四主星亮度，依《紫微斗數全書》通行表，順序為子丑寅卯辰巳午未申酉戌亥。
+const BRIGHTNESS = {
+  紫微: '平廟旺旺得旺廟廟旺旺得旺',
+  天機: '廟陷得旺利平廟陷得旺利平',
+  太陽: '陷不旺廟旺旺旺得得平不陷',
+  武曲: '旺廟得利廟平旺廟得利廟平',
+  天同: '旺不利平平廟陷不旺平平廟',
+  廉貞: '平利廟平利陷平利廟平利陷',
+  天府: '廟廟廟得廟得旺廟得旺廟得',
+  太陰: '廟廟旺陷陷陷不不利旺旺廟',
+  貪狼: '旺廟平利廟陷旺廟平利廟陷',
+  巨門: '旺不廟廟陷旺旺不廟廟陷旺',
+  天相: '廟廟廟陷得得廟得廟陷得得',
+  天梁: '廟旺廟廟廟陷廟旺陷得廟陷',
+  七殺: '旺廟廟旺廟平旺廟廟旺廟平',
+  破軍: '廟旺得陷旺平廟旺得陷旺平',
+};
 const MING_ZHU = ['貪狼','巨門','祿存','文曲','廉貞','武曲','破軍','武曲','廉貞','文曲','祿存','巨門'];
 const SHEN_ZHU = ['火星','天相','天梁','天同','文昌','天機','火星','天相','天梁','天同','文昌','天機'];
 
@@ -169,6 +186,8 @@ function chart(input){
   put(hong, '紅鸞', 'other'); put(hong + 6, '天喜', 'other');
   put(9 + month - 1, '天刑', 'tough'); put(1 + month - 1, '天姚', 'other');
 
+  stars.forEach((list, b) => list.forEach(s => { if (BRIGHTNESS[s.name]) s.bright = BRIGHTNESS[s.name][b]; }));
+
   SIHUA[yearStem].forEach((name, i) => {
     for (const list of stars) for (const s of list) if (s.name === name) s.hua = SIHUA_NAMES[i];
   });
@@ -198,6 +217,6 @@ function chart(input){
   };
 }
 
-const api = {STEMS, BRANCHES, PALACES, solarToLunar, lunarToSolar, chart, ziweiPosition, hourBranch, dayNumber, inRange, FIRST_DAY, LAST_DAY, toSolar};
+const api = {BRIGHTNESS, STEMS, BRANCHES, PALACES, solarToLunar, lunarToSolar, chart, ziweiPosition, hourBranch, dayNumber, inRange, FIRST_DAY, LAST_DAY, toSolar};
 if (typeof module !== 'undefined') module.exports = api; else g.Ziyuan = api;
 })(this);
