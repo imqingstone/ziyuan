@@ -86,6 +86,7 @@ button.primary{background:var(--purple);color:#fff;width:100%;font-size:17px;let
 .detail li small{color:var(--mute);margin-left:6px}
 .detail li p{margin:4px 0 0}
 .detail .inpal{background:var(--lav);border-radius:8px;padding:8px 10px;margin:8px 0 0}.detail .inpal b{display:block;font-size:14px;margin-bottom:2px}
+.detail .inpal.borrow{margin:0 0 12px;border:1px dashed #c7b8d1}
 .detail .empty{color:var(--mute)}
 .legend summary{cursor:pointer;color:var(--purple);font-weight:600}
 .legend dl{margin:12px 0 0}.legend dt{font-weight:700;color:var(--purple)}.legend dd{margin:0 0 10px}

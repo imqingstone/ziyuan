@@ -209,5 +209,6 @@ for (const [pal, m] of Object.entries(READINGS)) {
   for (const [star, t] of Object.entries(m)) { assert.ok(MAJOR.includes(star), star); assert.ok(t.length > 20, pal + star); }
 }
 const readingCount = Object.values(READINGS).reduce((n, m) => n + Object.keys(m).length, 0);
+assert.strictEqual(readingCount, 168);
 
 console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化; 流年與小限; 流曜; 真太陽時; ' + readingCount + ' palace readings.');
