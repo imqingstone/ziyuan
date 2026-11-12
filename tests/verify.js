@@ -56,7 +56,7 @@ assert.strictEqual(Z.hourBranch(12), 6); assert.strictEqual(Z.hourBranch(23), 0)
 
 // ---------- 4. 全盤規則檢查（隨機 3000 張） ----------
 const MAJOR = ['紫微','天機','太陽','武曲','天同','廉貞','天府','太陰','貪狼','巨門','天相','天梁','七殺','破軍'];
-const OTHERS = ['左輔','右弼','文昌','文曲','天魁','天鉞','祿存','擎羊','陀羅','火星','鈴星','地空','地劫','天馬'];
+const OTHERS = ['左輔','右弼','文昌','文曲','天魁','天鉞','祿存','擎羊','陀羅','火星','鈴星','地空','地劫','天馬','紅鸞','天喜','天刑','天姚'];
 const where = (c, name) => c.palaces.findIndex(p => p.stars.some(s => s.name === name));
 let seed = 7; const rnd = n => (seed = (seed * 1103515245 + 12345) % 2147483648) % n;
 let charts = 0;
@@ -101,7 +101,20 @@ assert.strictEqual(ex.palaces[where(ex, '天府')].branch, '子');
 assert.strictEqual(ex.forward, false);
 assert.deepStrictEqual(ex.sihua, ['太陽化祿','武曲化權','太陰化科','天同化忌']);
 assert.strictEqual(ex.palaces[where(ex, '祿存')].branch, '申'); // 庚祿在申
-assert.strictEqual(ex.palaces[where(ex, '天馬')].branch, '申'); // 午年馬在申
+assert.strictEqual(ex.palaces[where(ex, '天馬')].branch, '申'); // 五月：正五九月馬在申
+
+// 與文墨天機逐宮核對過的命盤：1979-02-23 00:05 女（農曆己未年正月廿七子時，陰女火六局）
+const wm = Z.chart({y: 1979, m: 2, d: 23, hour: 0, minute: 5, gender: 'F'});
+const layout = Object.fromEntries(wm.palaces.map(p => [p.branch, p.stars.map(s => s.name + (s.hua ? s.hua[1] : '')).sort().join(' ')]));
+const expected = {
+  巳: '天相 陀羅', 午: '天梁科 祿存', 未: '七殺 廉貞 擎羊', 申: '天馬 天鉞 紅鸞',
+  辰: '巨門 左輔 文曲忌', 酉: '火星 天刑', 卯: '紫微 貪狼權', 戌: '天同 右弼 文昌 鈴星',
+  寅: '天機 太陰 天喜', 丑: '天府 天姚', 子: '太陽 天魁', 亥: '武曲祿 破軍 地空 地劫',
+};
+for (const [b, s] of Object.entries(expected)) assert.strictEqual(layout[b], s.split(' ').sort().join(' '), b);
+assert.strictEqual(wm.palaces[wm.ming].branch, '寅'); assert.ok(wm.palaces[wm.ming].isShen);
+assert.strictEqual(wm.juName, '火六局'); assert.strictEqual(wm.yinyang, '陰女');
+assert.deepStrictEqual(wm.palaces.map(p => p.branch + p.decade[0]).join(), '子106,丑116,寅6,卯16,辰26,巳36,午46,未56,申66,酉76,戌86,亥96');
 
 // 晚子時：23:30 預設算隔天
 const late = Z.chart({y: 2000, m: 1, d: 1, hour: 23, minute: 30, gender: 'M'});

@@ -84,6 +84,7 @@ function huoLingStart(b){
   if ([5,9,1].includes(b)) return [3,10];   // 巳酉丑：火卯、鈴戌
   return [9,10];                            // 亥卯未：火酉、鈴戌
 }
+// 天馬依生月（全書：寅午戌月在申…），即以生月所在地支套用三合
 function tianMa(b){
   if ([2,6,10].includes(b)) return 8;
   if ([8,0,4].includes(b)) return 2;
@@ -162,7 +163,11 @@ function chart(input){
   const [huo, ling] = huoLingStart(yb);
   put(huo + h, '火星', 'tough'); put(ling + h, '鈴星', 'tough');
   put(11 - h, '地空', 'tough'); put(11 + h, '地劫', 'tough');
-  put(tianMa(yb), '天馬', 'other');
+  put(tianMa(monthPos), '天馬', 'other');
+  // 桃花與刑星：紅鸞（卯起子年逆行）、天喜（紅鸞對宮）、天刑（酉起正月）、天姚（丑起正月）
+  const hong = mod(3 - yb, 12);
+  put(hong, '紅鸞', 'other'); put(hong + 6, '天喜', 'other');
+  put(9 + month - 1, '天刑', 'tough'); put(1 + month - 1, '天姚', 'other');
 
   SIHUA[yearStem].forEach((name, i) => {
     for (const list of stars) for (const s of list) if (s.name === name) s.hua = SIHUA_NAMES[i];
