@@ -195,4 +195,11 @@ const y27 = Z.yearly(ex, 2027);   // 丁未年
 assert.deepStrictEqual(['流祿','流馬','流昌','流曲','流鸞','流喜'].map(n => at(y27, n)), ['午','巳','酉','巳','申','寅']);
 assert.strictEqual(y26.stars.flat().length, 10);
 
-console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化; 流年與小限; 流曜.');
+// 真太陽時：均時差與已知值相差不到 1 分鐘；經度每度 4 分鐘；可跨日。
+for (const [m, d, e] of [[2, 11, -14.2], [5, 14, 3.7], [7, 26, -6.5], [11, 3, 16.4]]) assert.ok(Math.abs(Z.equationOfTime(2026, m, d, 12, 0) - e) < 1, m + '/' + d);
+const ts = Z.trueSolar({y: 2026, m: 11, d: 12, hour: 12, minute: 0}, 121.56);
+assert.strictEqual(ts.lonMin, 6); assert.strictEqual(ts.hour, 12); assert.strictEqual(ts.minute, 22);
+const back = Z.trueSolar({y: 2026, m: 2, d: 11, hour: 0, minute: 5}, 118.32);   // 金門、二月：往前跨日
+assert.deepStrictEqual([back.m, back.d, back.hour], [2, 10, 23]);
+
+console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化; 流年與小限; 流曜; 真太陽時.');
