@@ -16,6 +16,14 @@
 <fieldset class="pick"><legend>性別</legend><label><input type="radio" name="gender" value="F" required>女</label><label><input type="radio" name="gender" value="M">男</label></fieldset>
 <label class="check"><input id="taiwan" type="checkbox" checked>在台灣出生（自動校正當年的夏令時間與日治時期時間）</label>
 <details class="adv"><summary>進階設定</summary>
+<fieldset class="solar"><legend>真太陽時</legend>
+<label class="check"><input id="solar" type="checkbox">以真太陽時排盤（依出生地經度與季節校正時間）</label>
+<div id="solar-opts" class="solar-opts" hidden>
+<label>出生地<select id="place"></select></label>
+<label id="lon-box" hidden>東經（度）<input id="lon" type="number" inputmode="decimal" step="0.01" min="-180" max="180" placeholder="例如 121.56"></label>
+<p class="muted">出生時間以台灣標準時間（UTC+8，東經 120 度）為準。</p>
+</div>
+</fieldset>
 <fieldset class="pick"><legend>晚子時（23:00 以後出生）</legend><label><input type="radio" name="lateZi" value="next" checked>算作隔天</label><label><input type="radio" name="lateZi" value="same">算作當天</label></fieldset>
 <fieldset class="pick"><legend>出生在農曆閏月</legend><label><input type="radio" name="leapMode" value="split" checked>十五日以前算本月，十六日起算下個月</label><label><input type="radio" name="leapMode" value="this">全部算本月</label><label><input type="radio" name="leapMode" value="next">全部算下個月</label></fieldset>
 </details>

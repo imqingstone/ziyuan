@@ -258,6 +258,21 @@ function yearly(c, year){
   };
 }
 
-const api = {yearly, SIHUA, SIHUA_NAMES, BRIGHTNESS, STEMS, BRANCHES, PALACES, solarToLunar, lunarToSolar, chart, ziweiPosition, hourBranch, dayNumber, inRange, FIRST_DAY, LAST_DAY, toSolar};
+// 真太陽時：標準時間（UTC+8，東經 120 度）加上經度差與均時差。
+// 均時差採 NOAA 近似公式，誤差約半分鐘。
+function equationOfTime(y, m, d, hour, minute){
+  const doy = Math.round((Date.UTC(y, m - 1, d) - Date.UTC(y, 0, 1)) / DAY);
+  const g = 2 * Math.PI / ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0 ? 366 : 365) * (doy + (hour - 8 + minute / 60 - 12) / 24);
+  return 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+}
+function trueSolar(t, lon){
+  const lonMin = (lon - 120) * 4, eot = equationOfTime(t.y, t.m, t.d, t.hour, t.minute);
+  const shift = Math.round(lonMin + eot);
+  const r = new Date(Date.UTC(t.y, t.m - 1, t.d, t.hour, t.minute) + shift * 60000);
+  return {y: r.getUTCFullYear(), m: r.getUTCMonth() + 1, d: r.getUTCDate(), hour: r.getUTCHours(), minute: r.getUTCMinutes(),
+    lonMin: Math.round(lonMin), eot: Math.round(eot), shift};
+}
+
+const api = {trueSolar, equationOfTime, yearly, SIHUA, SIHUA_NAMES, BRIGHTNESS, STEMS, BRANCHES, PALACES, solarToLunar, lunarToSolar, chart, ziweiPosition, hourBranch, dayNumber, inRange, FIRST_DAY, LAST_DAY, toSolar};
 if (typeof module !== 'undefined') module.exports = api; else g.Ziyuan = api;
 })(this);

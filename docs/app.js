@@ -9,6 +9,9 @@ const KIND_NAME = {major: '主星', lucky: '吉星', other: '', tough: '煞星'}
 let current = null, selected = null, liuYear = null;
 const SHORT = {命宮:'命',兄弟:'兄',夫妻:'夫',子女:'子',財帛:'財',疾厄:'疾',遷移:'遷',交友:'友',官祿:'官',田宅:'田',福德:'福',父母:'父'};
 
+// 出生地經度（縣市政府所在地附近）
+const PLACES = [['基隆',121.74],['臺北',121.56],['新北',121.46],['桃園',121.30],['新竹',120.97],['苗栗',120.82],['臺中',120.68],['彰化',120.54],['南投',120.68],['雲林',120.54],['嘉義',120.45],['臺南',120.21],['高雄',120.31],['屏東',120.49],['宜蘭',121.75],['花蓮',121.60],['臺東',121.14],['澎湖',119.57],['金門',118.32],['馬祖',119.94]];
+
 // ---------- 本機儲存（隱私：只存在這個瀏覽器） ----------
 const store = {
   get(k, fallback){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } },
@@ -41,7 +44,14 @@ function readForm(){
   if (!time) throw Error('請填寫出生時間');
   if (!gender) throw Error('請選擇性別');
   const [y, m, d] = date.split('-').map(Number), [hour, minute] = time.split(':').map(Number);
-  return {name: $('#name').value.trim(), y, m, d, hour, minute, gender, taiwan: $('#taiwan').checked,
+  let solar = null;
+  if ($('#solar').checked) {
+    const place = $('#place').value;
+    const lon = place === 'custom' ? parseFloat($('#lon').value) : PLACES.find(p => p[0] === place)[1];
+    if (!(lon >= -180 && lon <= 180)) throw Error('請填寫出生地的東經度數');
+    solar = {place, lon};
+  }
+  return {name: $('#name').value.trim(), y, m, d, hour, minute, gender, taiwan: $('#taiwan').checked, solar,
     lateZi: document.querySelector('input[name=lateZi]:checked').value,
     leapMode: document.querySelector('input[name=leapMode]:checked').value};
 }
@@ -54,6 +64,9 @@ function fillForm(v){
     const el = document.querySelector('input[name=' + n + '][value=' + val + ']'); if (el) el.checked = true;
   }
   $('#taiwan').checked = v.taiwan !== false;
+  $('#solar').checked = !!v.solar;
+  if (v.solar) { $('#place').value = v.solar.place; if (v.solar.place === 'custom') $('#lon').value = v.solar.lon; document.querySelector('.adv').open = true; }
+  syncSolar();
 }
 
 // 依設定換算標準時間後排盤
@@ -67,6 +80,15 @@ function compute(v){
       const p = n => String(n).padStart(2, '0');
       note = '這個日期台灣使用' + (jst ? '日治時期的時間（比現在快 1 小時）' : '夏令時間') + '，已換算為標準時間 ' + y + '/' + m + '/' + d + ' ' + p(hour) + ':' + p(minute) + ' 排盤。';
     }
+  }
+  if (v.solar) {
+    const p = n => String(n).padStart(2, '0'), sgn = n => (n >= 0 ? '+' : '−') + Math.abs(n);
+    const t = Ziyuan.trueSolar({y, m, d, hour, minute}, v.solar.lon);
+    const before = Ziyuan.hourBranch(hour), after = Ziyuan.hourBranch(t.hour);
+    note += (note ? ' ' : '') + '真太陽時：出生地' + (v.solar.place === 'custom' ? '' : v.solar.place) + '東經 ' + v.solar.lon + ' 度，經度差 ' + sgn(t.lonMin) + ' 分、均時差 ' + sgn(t.eot) + ' 分，以 ' +
+      t.y + '/' + t.m + '/' + t.d + ' ' + p(t.hour) + ':' + p(t.minute) + ' 排盤' +
+      (before !== after ? '，時辰從' + Ziyuan.BRANCHES[before] + '時變成' + Ziyuan.BRANCHES[after] + '時' : '') + '。';
+    ({y, m, d, hour, minute} = t);
   }
   const c = Ziyuan.chart({y, m, d, hour, minute, gender: v.gender, lateZi: v.lateZi, leapMode: v.leapMode});
   return {c, note, v};
@@ -154,6 +176,11 @@ function renderSaved(){
   $('#saved').innerHTML = saved.map((v, k) => '<li><span>' + E(v.name || '未命名') + '　' + v.y + '/' + v.m + '/' + v.d + '</span><button type="button" data-open="' + k + '">開啟</button><button type="button" data-del="' + k + '" aria-label="刪除' + E(v.name || '未命名') + '的命盤">刪除</button></li>').join('');
 }
 
+$('#place').innerHTML = PLACES.map(([n, lon]) => '<option value="' + n + '">' + n + '（東經 ' + lon.toFixed(2) + '）</option>').join('') + '<option value="custom">其他地點，自己填經度</option>';
+$('#place').value = '臺北';
+function syncSolar(){ $('#solar-opts').hidden = !$('#solar').checked; $('#lon-box').hidden = $('#place').value !== 'custom'; }
+$('#solar').addEventListener('change', syncSolar);
+$('#place').addEventListener('change', syncSolar);
 $('#terms').innerHTML = Object.entries(TERMS).map(([k, v]) => '<dt>' + k + '</dt><dd>' + v + '</dd>').join('');
 
 $('#form').addEventListener('submit', e => {
@@ -179,7 +206,7 @@ $('#save').addEventListener('click', () => {
   if (!current) return;
   const v = {...current.v};
   if (!v.name) { const n = prompt('幫這張命盤取個名字（選填）', ''); if (n === null) return; v.name = n.trim().slice(0, 20); current.v.name = v.name; render(); }
-  saved = [v, ...saved.filter(s => !(s.name === v.name && s.y === v.y && s.m === v.m && s.d === v.d && s.hour === v.hour && s.minute === v.minute && s.gender === v.gender))].slice(0, 30);
+  saved = [v, ...saved.filter(s => !(s.name === v.name && s.y === v.y && s.m === v.m && s.d === v.d && s.hour === v.hour && s.minute === v.minute && s.gender === v.gender && JSON.stringify(s.solar || null) === JSON.stringify(v.solar || null)))].slice(0, 30);
   toast(store.set('ziyuan.saved', saved) ? '已儲存' : '這個瀏覽器無法儲存');
   renderSaved();
 });

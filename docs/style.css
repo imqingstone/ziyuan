@@ -1,4 +1,5 @@
 :root{--bg:#f6f3f7;--panel:#fffdfd;--ink:#352e3c;--mute:#5f5767;--line:#ddd3e2;--purple:#5e4372;--lav:#efe8f3;--gold:#7d6127;--tough:#963838;--lu:#2c6642;--quan:#7f521a;--ke:#2b5a85;--ji:#a03434;--serif:"Noto Serif TC","Songti TC","PMingLiU",serif}
+[hidden]{display:none!important}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 -apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
@@ -26,6 +27,10 @@ legend{padding:0;margin-bottom:8px;font-size:15px}
 .pick label:has(input:checked){border-color:var(--purple);background:var(--lav);color:var(--purple);font-weight:600}
 .pick input,.check input{accent-color:var(--purple);margin:0;width:16px;height:16px;flex:none}
 .check{display:flex;gap:8px;align-items:flex-start;font-size:14px}.check input{margin-top:5px}
+.solar-opts{display:grid;gap:10px;margin-top:10px}
+.solar-opts select{display:block;width:100%;margin-top:6px;min-height:44px;padding:8px 12px;border:1px solid #b9adc2;border-radius:10px;background:#fff;color:var(--ink);font:inherit}
+.solar-opts input{display:block;width:100%;margin-top:6px;min-height:44px;padding:8px 12px;border:1px solid #b9adc2;border-radius:10px;background:#fff;color:var(--ink);font:inherit}
+.solar-opts .muted{margin:0;font-size:13px}
 .adv{margin:4px 0 12px}.adv summary{cursor:pointer;color:var(--purple);font-size:15px;padding:6px 0}.adv[open] summary{margin-bottom:10px}
 button{font:inherit;min-height:44px;padding:8px 18px;border-radius:999px;border:1px solid var(--purple);background:#fff;color:var(--purple);cursor:pointer}
 button.primary{background:var(--purple);color:#fff;width:100%;font-size:17px;letter-spacing:4px}
