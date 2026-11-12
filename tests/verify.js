@@ -161,4 +161,16 @@ for (const c of [ex, ...Array.from({length: 500}, (_, k) => Z.chart({y: 1930 + k
     else assert.strictEqual(s.bright, undefined, s.name);
   }
 
-console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness.');
+// 自化：宮干四化落在本宮的星才標示，且與宮干相符。
+for (const c of [ex, wm, ...Array.from({length: 300}, (_, k) => Z.chart({y: 1940 + k % 80, m: 1 + k % 12, d: 1 + k % 28, hour: k % 24, minute: 30, gender: k % 2 ? 'M' : 'F'}))])
+  for (const p of c.palaces) {
+    const four = Z.SIHUA[p.stem];
+    for (const s of p.stars) {
+      const i = four.indexOf(s.name);
+      assert.strictEqual(s.zihua, i < 0 ? undefined : Z.SIHUA_NAMES[i], s.name + p.stem + p.branch);
+    }
+  }
+// 範例：1990/6/15 午時女命，命宮戊子有天府、武曲；戊干四化為貪狼、太陰、右弼、天機，命宮沒有自化。
+assert.ok(ex.palaces[0].stars.every(s => !s.zihua));
+
+console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化.');

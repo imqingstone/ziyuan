@@ -199,6 +199,11 @@ function chart(input){
     for (const list of stars) for (const s of list) if (s.name === name) s.hua = SIHUA_NAMES[i];
   });
 
+  // 自化（離心自化）：宮干的四化星剛好在本宮。
+  stars.forEach((list, b) => SIHUA[STEMS[stemOf(b)]].forEach((name, i) => {
+    for (const s of list) if (s.name === name) s.zihua = SIHUA_NAMES[i];
+  }));
+
   const palaces = BRANCHES.map((br, b) => {
     const idx = mod(ming - b, 12);
     const step = forward ? mod(b - ming, 12) : mod(ming - b, 12);
@@ -224,6 +229,6 @@ function chart(input){
   };
 }
 
-const api = {BRIGHTNESS, STEMS, BRANCHES, PALACES, solarToLunar, lunarToSolar, chart, ziweiPosition, hourBranch, dayNumber, inRange, FIRST_DAY, LAST_DAY, toSolar};
+const api = {SIHUA, SIHUA_NAMES, BRIGHTNESS, STEMS, BRANCHES, PALACES, solarToLunar, lunarToSolar, chart, ziweiPosition, hourBranch, dayNumber, inRange, FIRST_DAY, LAST_DAY, toSolar};
 if (typeof module !== 'undefined') module.exports = api; else g.Ziyuan = api;
 })(this);
