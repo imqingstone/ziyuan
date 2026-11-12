@@ -83,7 +83,7 @@ function getYearly(){
 function liuHua(name, Y){ const h = Y && Y.sihua.find(x => x.name === name); return h ? h.hua : ''; }
 function starHTML(s, Y){
   const lh = liuHua(s.name, Y);
-  return '<span class="s ' + s.kind + '">' + s.name + (s.bright ? '<span class="lv lv-' + s.bright + '">' + s.bright + '</span>' : '') + (s.hua ? '<span class="hua ' + s.hua + '">' + s.hua.slice(1) + '</span>' : '') + (s.zihua ? '<span class="hua zi ' + s.zihua + '">自' + s.zihua.slice(1) + '</span>' : '') + (lh ? '<span class="hua liu ' + lh + '">年' + lh.slice(1) + '</span>' : '') + '</span>';
+  return '<span class="s ' + s.kind + '"><span class="nm">' + s.name + (s.bright ? '<span class="lv lv-' + s.bright + '">' + s.bright + '</span>' : '') + '</span>' + (s.hua ? '<span class="hua ' + s.hua + '">' + s.hua.slice(1) + '</span>' : '') + (s.zihua ? '<span class="hua zi ' + s.zihua + '">自' + s.zihua.slice(1) + '</span>' : '') + (lh ? '<span class="hua liu ' + lh + '">年' + lh.slice(1) + '</span>' : '') + '</span>';
 }
 function sortStars(list){ return [...list].sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]); }
 
