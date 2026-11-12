@@ -1,7 +1,7 @@
 'use strict';
 const $ = s => document.querySelector(s);
 const E = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
-const {LIU_INFO, STAR_INFO, HUA_INFO, ZIHUA_INFO, BRIGHT_INFO, PALACE_INFO, TERMS} = window.ZiyuanTexts;
+const {LIU_INFO, LIU_STAR_INFO, STAR_INFO, HUA_INFO, ZIHUA_INFO, BRIGHT_INFO, PALACE_INFO, TERMS} = window.ZiyuanTexts;
 // 地支在 4×4 盤面上的位置 [列, 欄]
 const GRID = {5: [1, 1], 6: [1, 2], 7: [1, 3], 8: [1, 4], 4: [2, 1], 9: [2, 4], 3: [3, 1], 10: [3, 4], 2: [4, 1], 1: [4, 2], 0: [4, 3], 11: [4, 4]};
 const KIND_ORDER = {major: 0, lucky: 1, other: 2, tough: 3};
@@ -99,9 +99,11 @@ function render(){
   const cells = c.palaces.map(p => {
     const [r, col] = GRID[p.index];
     const stars = sortStars(p.stars);
-    const label = p.name + '，' + p.stem + p.branch + '宮' + (p.isShen ? '，身宮' : '') + '。' + (stars.length ? stars.map(s => s.name + (s.bright ? s.bright : '') + (s.hua || '') + (s.zihua ? '、自' + s.zihua : '') + (liuHua(s.name, Y) ? '、流年' + liuHua(s.name, Y) : '')).join('、') : '沒有主星') + '。大限 ' + p.decade[0] + ' 到 ' + p.decade[1] + ' 歲' +
+    let label = p.name + '，' + p.stem + p.branch + '宮' + (p.isShen ? '，身宮' : '') + '。' + (stars.length ? stars.map(s => s.name + (s.bright ? s.bright : '') + (s.hua || '') + (s.zihua ? '、自' + s.zihua : '') + (liuHua(s.name, Y) ? '、流年' + liuHua(s.name, Y) : '')).join('、') : '沒有主星') + '。大限 ' + p.decade[0] + ' 到 ' + p.decade[1] + ' 歲' +
       (Y ? '。流年' + Y.names[p.index] + (Y.daxian === p.index ? '，目前大限' : '') + (Y.xiaoxian === p.index ? '，小限' : '') : '');
-    const tags = Y ? '<span class="ytags"><span class="yt yt-liu' + (Y.ming === p.index ? ' on' : '') + '">年' + SHORT[Y.names[p.index]] + '</span>' +
+    const ls = Y ? Y.stars[p.index] : [];
+    if (ls.length) label += '。流曜 ' + ls.map(x => x.name).join('、');
+    const tags = Y ? (ls.length ? '<span class="lstars">' + ls.map(x => '<span class="ls ' + x.kind + '">' + x.name + '</span>').join('') + '</span>' : '') + '<span class="ytags"><span class="yt yt-liu' + (Y.ming === p.index ? ' on' : '') + '">年' + SHORT[Y.names[p.index]] + '</span>' +
       (Y.daxian === p.index ? '<span class="yt yt-da">大限</span>' : '') + (Y.xiaoxian === p.index ? '<span class="yt yt-xiao">小限</span>' : '') + '</span>' : '';
     return '<button type="button" class="cell' + (p.index === c.ming ? ' ming' : '') + '" style="grid-row:' + r + ';grid-column:' + col + '" data-i="' + p.index + '" aria-pressed="' + (p.index === selected) + '" aria-label="' + E(label) + '">' +
       '<span class="stars">' + stars.map(s => starHTML(s, Y)).join('') + '</span>' + tags +
@@ -140,7 +142,8 @@ function showDetail(i, focus){
   $('#detail').innerHTML = '<h3>' + p.name + '・' + p.stem + p.branch + (p.isShen ? '（身宮）' : '') + '</h3>' +
     '<p class="pinfo">' + PALACE_INFO[p.name] + '大限：' + p.decade[0] + '–' + p.decade[1] + ' 歲。</p>' +
     (Y ? '<p class="yline">' + Y.year + ' ' + Y.ganzhi + '年（虛歲 ' + Y.age + '），這一宮是流年的' + Y.names[i] + '。' +
-      (Y.daxian === i ? '目前正走這一宮的大限。' : '') + (Y.xiaoxian === i ? '今年的小限也在這一宮。' : '') + LIU_INFO[Y.names[i]] + '</p>' : '') +
+      (Y.daxian === i ? '目前正走這一宮的大限。' : '') + (Y.xiaoxian === i ? '今年的小限也在這一宮。' : '') + LIU_INFO[Y.names[i]] + '</p>' +
+      (Y.stars[i].length ? '<ul class="liulist">' + Y.stars[i].map(x => '<li><b class="' + x.kind + '">' + x.name + '</b><small>流曜</small><p>' + LIU_STAR_INFO[x.name] + '</p></li>').join('') + '</ul>' : '') : '') +
     (borrow ? '<p class="empty">這一宮沒有主星，傳統上會參考對面的' + opposite.name + '（' + (opposite.stars.filter(s => s.kind === 'major').map(s => s.name).join('、') || '同樣沒有主星') + '）一起看。</p>' : '') +
     (items ? '<ul>' + items + '</ul>' : '');
   if (focus) $('#detail').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest'});

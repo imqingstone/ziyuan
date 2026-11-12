@@ -49,6 +49,9 @@ button.primary{background:var(--purple);color:#fff;width:100%;font-size:17px;let
 .hua{display:inline-block;font-size:10px;font-weight:600;border:1px solid;border-radius:4px;padding:0 2px;margin-left:1px;line-height:1.3;vertical-align:1px}
 .hua.zi{border-style:dashed;font-weight:400}.hua.化祿{color:var(--lu)}.hua.化權{color:var(--quan)}.hua.化科{color:var(--ke)}.hua.化忌{color:var(--ji)}
 .hua.liu{border-color:transparent;font-weight:600;color:#fff}.hua.liu.化祿{background:var(--lu)}.hua.liu.化權{background:var(--quan)}.hua.liu.化科{background:var(--ke)}.hua.liu.化忌{background:var(--ji)}
+.cell .lstars{display:flex;flex-wrap:wrap;gap:0 4px;margin-top:2px;font-size:10px;line-height:1.4}
+.ls{white-space:nowrap;color:var(--mute)}.ls.tough{color:var(--tough)}.ls.lucky{color:var(--gold)}.ls.other{color:var(--lu)}
+.detail .liulist{margin:-4px 0 12px}.detail .liulist li{border-top:1px dashed var(--line);padding:8px 0}
 .cell .ytags{display:flex;flex-wrap:wrap;gap:2px;margin-top:3px}
 .yt{font-size:10px;line-height:1.4;padding:0 3px;border-radius:4px;border:1px solid var(--line);color:var(--mute);white-space:nowrap}
 .yt-liu.on{background:var(--purple);border-color:var(--purple);color:#fff}

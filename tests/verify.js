@@ -187,4 +187,12 @@ assert.strictEqual(Z.yearly(ex, ex.palaces[ex.ming].decade[0] + 1989).daxian, ex
 assert.strictEqual(Z.yearly(ex, 1991).daxian, null);   // 起運前
 assert.throws(() => Z.yearly(ex, 1989));
 
-console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化; 流年與小限.');
+// 流曜：2026 丙午年
+const at = (Y, name) => Z.BRANCHES[Y.stars.findIndex(l => l.some(s => s.name === name))];
+assert.deepStrictEqual(['流祿','流羊','流陀','流馬','流魁','流鉞','流昌','流曲','流鸞','流喜'].map(n => at(y26, n)),
+  ['巳','午','辰','申','亥','酉','申','午','酉','卯']);
+const y27 = Z.yearly(ex, 2027);   // 丁未年
+assert.deepStrictEqual(['流祿','流馬','流昌','流曲','流鸞','流喜'].map(n => at(y27, n)), ['午','巳','酉','巳','申','寅']);
+assert.strictEqual(y26.stars.flat().length, 10);
+
+console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化; 流年與小限; 流曜.');
