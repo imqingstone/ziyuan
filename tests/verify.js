@@ -150,9 +150,15 @@ assert.strictEqual(lvAt('紫微', '午'), '廟'); assert.strictEqual(lvAt('紫�
 assert.strictEqual(lvAt('太陽', '卯'), '廟'); assert.strictEqual(lvAt('太陽', '子'), '陷');
 assert.strictEqual(lvAt('太陰', '亥'), '廟'); assert.strictEqual(lvAt('太陰', '卯'), '陷');
 assert.strictEqual(lvAt('天機', '巳'), '平'); assert.strictEqual(lvAt('巨門', '辰'), '陷');
-for (const p of ex.palaces) for (const s of p.stars) {
-  if (MAJOR.includes(s.name)) assert.strictEqual(s.bright, Z.BRIGHTNESS[s.name][p.index], s.name);
-  else assert.strictEqual(s.bright, undefined, s.name);
-}
+const LV_MINOR = ['文昌','文曲','火星','鈴星','擎羊','陀羅'];
+for (const n of LV_MINOR) assert.strictEqual(Z.BRIGHTNESS[n].length, 12, n);
+assert.strictEqual(lvAt('文昌', '巳'), '廟'); assert.strictEqual(lvAt('文曲', '巳'), '廟');
+assert.strictEqual(lvAt('火星', '寅'), '廟'); assert.strictEqual(lvAt('鈴星', '申'), '陷');
+assert.strictEqual(lvAt('擎羊', '辰'), '廟'); assert.strictEqual(lvAt('陀羅', '亥'), '陷');
+for (const c of [ex, ...Array.from({length: 500}, (_, k) => Z.chart({y: 1930 + k % 90, m: 1 + k % 12, d: 1 + k % 28, hour: k % 24, minute: 0, gender: k % 2 ? 'M' : 'F'}))])
+  for (const p of c.palaces) for (const s of p.stars) {
+    if (MAJOR.includes(s.name) || LV_MINOR.includes(s.name)) assert.ok('廟旺得利平不陷'.includes(s.bright) && s.bright, s.name + p.branch);
+    else assert.strictEqual(s.bright, undefined, s.name);
+  }
 
-console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; major-star brightness.');
+console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness.');
