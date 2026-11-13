@@ -141,6 +141,8 @@ function render(){
     '<p>' + c.sihua.join(' ') + '</p>' +
     (Y ? '<p class="cy">' + Y.year + ' ' + Y.ganzhi + '年・虛歲 ' + Y.age + '<br>流年 ' + Y.sihua.map(x => x.name + x.hua).join(' ') + '</p>' : '') + '</div>';
   $('#board').innerHTML = cells + center;
+  $('#summary-box').innerHTML = '<h3>白話總結</h3>' + ZiyuanSummary.summarize(c, window.ZiyuanTexts, READINGS, Ziyuan, new Date().getFullYear())
+    .map(([t, s]) => '<h4>' + t + '</h4>' + s.split('\n').map(x => '<p>' + x + '</p>').join('')).join('') + '<p class="muted">由命盤自動整理，當作認識自己的參考就好；點選宮位可以看各宮的詳細說明。</p>';
   showDetail(selected == null ? c.ming : selected, false);
 }
 
