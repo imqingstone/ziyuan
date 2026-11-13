@@ -78,6 +78,9 @@ button.primary{background:var(--purple);color:#fff;width:100%;font-size:17px;let
 .center{grid-column:2/4;grid-row:2/4;border:1px dashed #c7b8d1;border-radius:10px;padding:10px;font-size:13px;line-height:1.6;display:flex;flex-direction:column;justify-content:center;text-align:center;background:#fbf8fc;min-width:0}
 .center strong{font-family:var(--serif);font-size:17px;color:var(--purple);display:block;overflow-wrap:anywhere}
 .center p{margin:2px 0}
+.summary-box{border-color:var(--purple);border-width:2px}
+.summary-box h3{font-family:var(--serif);color:var(--purple);margin:0 0 4px;font-size:19px}
+.summary-box h4{margin:12px 0 2px;font-size:15px;color:var(--purple)}.summary-box p{margin:0}.summary-box p.muted{margin-top:12px}
 .detail h3{font-family:var(--serif);color:var(--purple);margin:0 0 4px;font-size:19px}
 .detail .pinfo{color:var(--mute);margin:0 0 12px}
 .detail ul{list-style:none;margin:0;padding:0}

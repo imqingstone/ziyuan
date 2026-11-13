@@ -211,4 +211,19 @@ for (const [pal, m] of Object.entries(READINGS)) {
 const readingCount = Object.values(READINGS).reduce((n, m) => n + Object.keys(m).length, 0);
 assert.strictEqual(readingCount, 168);
 
-console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化; 流年與小限; 流曜; 真太陽時; ' + readingCount + ' palace readings.');
+// 白話總結
+const SUM = require('../docs/summary.js'), TX = require('../docs/texts.js');
+const sx = SUM.summarize(ex, TX, READINGS, Z, 2026);
+assert.deepStrictEqual(sx.map(x => x[0]), ['你是什麼樣的人', '後天的重心', '人生的亮點與課題', '現在這個階段']);
+assert.ok(sx[0][1].startsWith('你的命宮是武曲（旺）、天府（廟）'));
+assert.ok(sx[2][1].includes('化權在命宮（武曲）：你本身很有主見') && sx[2][1].includes('化忌在兄弟宮（天同）'));
+assert.ok(sx[3][1].includes('子女宮的大限') && sx[3][1].includes('流年命宮落在本命的遷移宮'));
+for (let k = 0; k < 400; k++) {
+  const c = Z.chart({y: 1930 + k % 90, m: 1 + k % 12, d: 1 + (k * 7) % 28, hour: k % 24, minute: 20, gender: k % 2 ? 'M' : 'F'});
+  for (const [t, s] of SUM.summarize(c, TX, READINGS, Z, 2026)) {
+    assert.ok(s.length > 10 && !/undefined|NaN/.test(s), t + s);
+    for (const w of ['不必', '真正', '值得', '未必']) assert.ok(!s.includes(w), w);
+  }
+}
+
+console.log('PASS: lunar months ' + monthChecks + ' (' + skipped + ' documented differences); ' + days + ' days round-trip; ziwei table; ' + charts + ' random charts; worked example; 3 charts matched with 文墨天機; late-zi and leap-month options; star brightness; 自化; 流年與小限; 流曜; 真太陽時; ' + readingCount + ' palace readings; summary.');
