@@ -118,3 +118,4 @@ footer p{margin:0 0 6px}
 .home-link img{width:28px;height:28px;border-radius:8px;flex:none;display:block}
 .home-link:hover{transform:translateY(-1px)}
 @media(prefers-reduced-motion:reduce){.home-link{transition:none}.home-link:hover{transform:none}}
+.seg{display:inline-block}
